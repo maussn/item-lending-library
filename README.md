@@ -4,3 +4,9 @@ Prototype for a platform for loaning out items. Made as an individual project fo
 # Installation
 Nothing to install yet.
 
+# Stack
+### Backend
+- Scala
+- Kafka
+
+### Frontend
