@@ -3,7 +3,9 @@ val CirceVersion = "0.14.14"
 val MunitVersion = "1.1.1"
 val LogbackVersion = "1.5.18"
 val MunitCatsEffectVersion = "2.1.0"
+
 val SlickMySQLVersion = "8.0.33"
+val SlickTypesafeVersion = "3.6.1"
 
 // Common settings for all subprojects
 lazy val commonSettings = Seq(
@@ -17,10 +19,12 @@ lazy val commonSettings = Seq(
 )
 
 // Define the core project
-lazy val ApiGateway = (project in file("rotom.api-gateway"))
+lazy val apiGateway = (project in file("rotom.api-gateway"))
+  .dependsOn(peristence)
   .settings(
     commonSettings,
     name := "api-gateway",
+    Compile / run / mainClass := Some("nl.sogyo.apigateway.Main"),
     libraryDependencies ++= Seq(
       "org.http4s"      %% "http4s-ember-server" % Http4sVersion,
       "org.http4s"      %% "http4s-ember-client" % Http4sVersion,
@@ -37,7 +41,11 @@ lazy val peristence = (project in file("rotom.persistence"))
     commonSettings,
     name := "persistence",
     libraryDependencies ++= Seq(
-      "com.mysql" % "mysql-connector-j" % SlickMySQLVersion
+      "com.typesafe.slick" %% "slick" % SlickTypesafeVersion,
+      "com.mysql" % "mysql-connector-j" % SlickMySQLVersion,
+      "org.scalameta"   %% "munit"               % MunitVersion           % Test,
+      "org.typelevel"   %% "munit-cats-effect"   % MunitCatsEffectVersion % Test,
+      "ch.qos.logback"  %  "logback-classic"     % LogbackVersion         % Runtime,
     )
   )
 
@@ -49,9 +57,13 @@ lazy val peristence = (project in file("rotom.persistence"))
 //     )
 
 lazy val root = (project in file("."))
-  .aggregate(ApiGateway)
+  .aggregate(apiGateway, peristence)
+  .dependsOn(apiGateway, peristence)
   .settings(
     name := "item-lending-library",
     commonSettings,
-    publish/skip := true
+    publish/skip := true,
+    Compile / run / fork := true
   )
+
+Compile / run := (apiGateway / Compile / run).evaluated
