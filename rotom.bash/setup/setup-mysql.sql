@@ -5,6 +5,6 @@ CREATE TABLE rotom.accounts (
   username VARCHAR(255) NOT NULL,
   userpassword VARCHAR(255) NOT NULL
 );
-CREATE user 'rotom-accounts'@'localhost' identified BY 'password';
-GRANT INSERT, SELECT, UPDATE, DELETE ON rotom.accounts TO 'rotom-accounts'@'localhost';
+CREATE user '${ROTOM_ACCOUNTS_USERNAME}'@'localhost' identified BY '${ROTOM_ACCOUNTS_PASSWORD}';
+GRANT INSERT, SELECT, UPDATE, DELETE ON rotom.accounts TO '${ROTOM_ACCOUNTS_USERNAME}'@'localhost';
 
