@@ -3,8 +3,9 @@ CREATE DATABASE rotom;
 CREATE TABLE rotom.accounts (
   uuid BINARY(16) DEFAULT (UUID_TO_BIN(UUID())) NOT NULL PRIMARY KEY,
   username VARCHAR(255) NOT NULL UNIQUE,
-  userpassword VARCHAR(255) NOT NULL
+  auth_string VARCHAR(255) NOT NULL
 );
+INSERT INTO rotom.accounts (username, auth_string) VALUES ("admin", "admin");
 CREATE user '${ROTOM_ACCOUNTS_USERNAME}'@'localhost' identified BY '${ROTOM_ACCOUNTS_PASSWORD}';
 GRANT INSERT, SELECT, UPDATE, DELETE ON rotom.accounts TO '${ROTOM_ACCOUNTS_USERNAME}'@'localhost';
 
