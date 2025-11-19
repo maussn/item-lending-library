@@ -6,6 +6,7 @@ val MunitCatsEffectVersion = "2.1.0"
 
 val SlickMySQLVersion = "8.0.33"
 val SlickTypesafeVersion = "3.6.1"
+val H2Version = "2.4.240"
 
 // Common settings for all subprojects
 lazy val commonSettings = Seq(
@@ -44,11 +45,12 @@ lazy val peristence = (project in file("rotom.persistence"))
     commonSettings,
     name := "persistence",
     libraryDependencies ++= Seq(
-      "com.typesafe.slick" %% "slick" % SlickTypesafeVersion,
-      "com.mysql" % "mysql-connector-j" % SlickMySQLVersion,
-      "org.scalameta"   %% "munit"               % MunitVersion           % Test,
-      "org.typelevel"   %% "munit-cats-effect"   % MunitCatsEffectVersion % Test,
-      "ch.qos.logback"  %  "logback-classic"     % LogbackVersion         % Runtime,
+      "com.typesafe.slick"  %%  "slick"               % SlickTypesafeVersion,
+      "com.mysql"           %   "mysql-connector-j"   % SlickMySQLVersion,
+      "com.h2database"      %   "h2"                  % H2Version,
+      "org.scalameta"       %%  "munit"               % MunitVersion            % Test,
+      "org.typelevel"       %%  "munit-cats-effect"   % MunitCatsEffectVersion  % Test,
+      "ch.qos.logback"      %   "logback-classic"     % LogbackVersion          % Runtime,
     )
   )
 
