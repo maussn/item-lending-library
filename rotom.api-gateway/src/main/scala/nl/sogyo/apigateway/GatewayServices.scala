@@ -5,13 +5,15 @@ import cats.effect.*
 import io.circe.*
 import io.circe.generic.auto.*
 import nl.sogyo.apigateway.Authentication.authenticate
-import nl.sogyo.persistence.DatabaseReader
+import nl.sogyo.persistence.DatabaseProvider
 import org.http4s.*
 import org.http4s.circe.*
 import org.http4s.dsl.io.*
 import org.http4s.headers.`WWW-Authenticate`
 
-import scala.util.{Try, Success, Failure}
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 
 case class UserLogin(username: String, password: String)
 
@@ -19,12 +21,12 @@ implicit val decoder: EntityDecoder[IO, UserLogin] = jsonOf[IO, UserLogin]
 
 object GatewayServices:
 
-  def getServices(databaseReader: DatabaseReader): Kleisli[IO, Request[IO], Response[IO]] =
+  def getServices(databaseProvider: DatabaseProvider): Kleisli[IO, Request[IO], Response[IO]] =
     HttpRoutes.of[IO] {
     case req @ POST -> Root / "login" =>
       for {
         user <- req.as[UserLogin]
-        auth = Try(authenticate(user, databaseReader))
+        auth = Try(authenticate(user, databaseProvider.accountsDatabase))
         
         resp <- auth match
           case Success(uuid) => Ok(uuid)

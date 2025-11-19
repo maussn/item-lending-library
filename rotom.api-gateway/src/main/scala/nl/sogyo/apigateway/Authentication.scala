@@ -1,31 +1,20 @@
 package nl.sogyo.apigateway
 
-import nl.sogyo.persistence.schemas.Account
-import nl.sogyo.persistence.DatabaseReader
-import slick.lifted.TableQuery
-import nl.sogyo.persistence.schemas.AccountsTable
-import slick.jdbc.MySQLProfile.api.*
-
-val accountsTable = TableQuery[AccountsTable]
+import nl.sogyo.persistence.Account
+import nl.sogyo.persistence.AccountsDatabase
 
 object Authentication {
 
-  private def queryAccount(username: String) = for {
-    account <- accountsTable if account.username.equals(username)
-  } yield account
-
   private def isCorrectPassword(passwordDatabase: String, passwordRequest: String): Boolean =
     passwordDatabase.equals(passwordRequest)
-
 
   def checkPassword(account: Account, userLogin: UserLogin): String =
     if isCorrectPassword(account.password, userLogin.password)
     then account.uuid
     else throw IncorrectLoginException("Incorrect password.")
 
-  def authenticate(userLogin: UserLogin, databaseReader: DatabaseReader): String =
-    val query = queryAccount(userLogin.username)
-    val accountOption = databaseReader.exec(query.result).headOption
+  def authenticate(userLogin: UserLogin, database: AccountsDatabase): String =
+    val accountOption = database.queryAccountsByUsername(userLogin.username)
     accountOption match
       case Some(account) => checkPassword(account, userLogin)
       case None => throw IncorrectLoginException("Incorrect username.")
