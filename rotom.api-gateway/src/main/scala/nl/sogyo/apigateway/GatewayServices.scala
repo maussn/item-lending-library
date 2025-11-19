@@ -27,7 +27,6 @@ object GatewayServices:
       for {
         user <- req.as[UserLogin]
         auth = Try(authenticate(user, databaseProvider.accountsDatabase))
-        
         resp <- auth match
           case Success(uuid) => Ok(uuid)
           case Failure(e) => Unauthorized(`WWW-Authenticate`(Challenge("Basic", "my-realm")), e.getMessage())

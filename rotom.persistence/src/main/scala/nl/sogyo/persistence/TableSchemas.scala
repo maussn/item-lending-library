@@ -3,7 +3,7 @@ package nl.sogyo.persistence
 import nl.sogyo.persistence.ProfileProvider
 
 case class Account(
-  uuid: String,
+  uuid: Option[String],
   username: String,
   password: String
 )
@@ -15,7 +15,7 @@ trait Tables { this: ProfileProvider =>
     def uuid = column[String]("uuid", O.PrimaryKey)
     def username = column[String]("username")
     def password = column[String]("auth_string")
-    def * = (uuid, username, password).mapTo[Account]
+    def * = (uuid.?, username, password).mapTo[Account]
   }
 
   val accounts = TableQuery[AccountsTable]
