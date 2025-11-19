@@ -4,23 +4,18 @@ import cats.data.Kleisli
 import cats.effect.*
 import io.circe.*
 import io.circe.generic.auto.*
+import nl.sogyo.apigateway.Authentication.authenticate
 import nl.sogyo.persistence.DatabaseReader
-import nl.sogyo.persistence.schemas.AccountsTable
 import org.http4s.*
 import org.http4s.circe.*
 import org.http4s.dsl.io.*
-import slick.jdbc.MySQLProfile.api.*
-import slick.lifted.TableQuery
+import org.http4s.headers.`WWW-Authenticate`
+
+import scala.util.{Try, Success, Failure}
 
 case class UserLogin(username: String, password: String)
 
 implicit val decoder: EntityDecoder[IO, UserLogin] = jsonOf[IO, UserLogin]
-
-val accountsTable = TableQuery[AccountsTable]
-
-def queryAccount(username: String) = for {
-  account <- accountsTable if account.username.equals(username)
-} yield account
 
 object GatewayServices:
 
@@ -29,7 +24,10 @@ object GatewayServices:
     case req @ POST -> Root / "login" =>
       for {
         user <- req.as[UserLogin]
-        account = databaseReader.exec(queryAccount(user.username).result).head
-        resp <- Ok("test")
+        auth = Try(authenticate(user, databaseReader))
+        
+        resp <- auth match
+          case Success(uuid) => Ok(uuid)
+          case Failure(e) => Unauthorized(`WWW-Authenticate`(Challenge("Basic", "my-realm")), e.getMessage())
       } yield resp
     }.orNotFound
