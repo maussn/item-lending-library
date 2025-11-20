@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { NavButton } from "./NavButton";
 
 interface LoginMenuProps {
   isLoggedIn: boolean;
@@ -6,6 +7,7 @@ interface LoginMenuProps {
 }
 
 export const LoginMenu = ({ isLoggedIn, username }: LoginMenuProps) => {
+  const { pathname } = useLocation();
   return (
     <div className="login-menu">
       {isLoggedIn ? (
@@ -14,9 +16,7 @@ export const LoginMenu = ({ isLoggedIn, username }: LoginMenuProps) => {
           <button className="logout-button">Logout</button>
         </div>
       ) : (
-        <Link to="/login" className="login-button">
-          Login
-        </Link>
+        <NavButton to="/login" text="login" isActive={pathname === "/login"} />
       )}
     </div>
   );
