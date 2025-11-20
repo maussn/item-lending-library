@@ -8,7 +8,8 @@ export const Login = () => {
 
   const handleLogin = () => {
     const username = (document.getElementById("username-input") as HTMLInputElement).value
-    login(username, "1")
+    const password = (document.getElementById("password-input") as HTMLInputElement).value
+    login(username, password)
     navigate("/")
   }
 

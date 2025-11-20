@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
+import { sendLoginRequest } from "../services/api";
 
 interface AuthContextType {
   isLoggedIn: boolean
@@ -16,10 +17,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState<string | null>(null)
   const [id, setId] = useState<string | null>(null)
 
-  const login = (name: string, id: string) => {
-    setLoggedIn(true)
-    setUsername(name)
-    setId(id)
+  const login = async (name: string, password: string) => {
+    const body = await sendLoginRequest(name, password)
+    if (body.id) {
+      setLoggedIn(true)
+      setUsername(name)
+      setId(body.id)
+    } else {
+      console.log(body)
+    }
   }
 
   const logout = () => {

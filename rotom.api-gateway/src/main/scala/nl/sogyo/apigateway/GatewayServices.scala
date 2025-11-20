@@ -25,6 +25,10 @@ implicit val helloEncoder: Encoder[Hello] = semiauto.deriveEncoder[Hello]
 implicit def helloEntityEncoder[F[_]]: EntityEncoder[F, Hello] = jsonEncoderOf[F, Hello]
 
 
+case class SuccesfulLogin(uuid: String)
+implicit val loginEncoder: Encoder[SuccesfulLogin] = semiauto.deriveEncoder[SuccesfulLogin]
+implicit def loginEntityEncoder[F[_]]: EntityEncoder[F, SuccesfulLogin] = jsonEncoderOf[F, SuccesfulLogin]
+
 object GatewayServices:
 
   def getServices(databaseProvider: DatabaseProvider): Kleisli[IO, Request[IO], Response[IO]] =
@@ -32,9 +36,10 @@ object GatewayServices:
     case req @ POST -> Root / "api" / "login" =>
       for {
         user <- req.as[UserLogin]
+        test = println(s"${user.username}\t${user.password}")
         auth = Try(authenticate(user, databaseProvider.accountsDatabase))
         resp <- auth match
-          case Success(uuid) => Ok(uuid)
+          case Success(uuid) => Ok(SuccesfulLogin(uuid))
           case Failure(e) => Unauthorized(`WWW-Authenticate`(Challenge("Basic", "my-realm")), e.getMessage())
       } yield resp
     case GET -> Root / "api" / "hello" =>
