@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from "react-router-dom";
 import logo from "../assets/0479Rotom-Mow.png";
 import { NavButton } from "../components/NavButton";
+import { LoginMenu } from "../components/LoginMenu";
 
 export const RootLayout = () => {
   const { pathname } = useLocation();
@@ -8,10 +9,10 @@ export const RootLayout = () => {
   return <div>
     <header id="logo-header">
       <img src={logo}/>
-      <nav>
+      <nav className="navbar">
         <NavButton to="/" text="catalog" isActive={pathname === "/"} />
-        <NavButton to="/login" text="login" isActive={pathname === "/login"}/>
       </nav>
+      <LoginMenu isLoggedIn={false}/>
     </header>
 
     <main className="flex-1">

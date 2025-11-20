@@ -68,12 +68,14 @@ button:focus-visible {
 }
 
 #logo-header {
-    position: sticky;
+    position: fixed;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    height: 200px;
-    color: red;
+    height: 6em;
+    width: 100%;
+    background-color: #36363f;
+    padding: 0 1rem;
 }
 
 
@@ -81,12 +83,38 @@ button:focus-visible {
     height: inherit;
 }
 
+.navbar {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  gap: 0.2rem;
+}
 
-#mainheader {
-    background-color: var(--primary-color);
-    font-size: 2rem;
-    color: white;
-    position: sticky;
-    top: 0;
-    height: 60px;
+/* LoginMenu from ChatGPT */
+.login-menu {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-right: 2rem;
+}
+
+.login-button,
+.logout-button {
+  background: #4e4e58;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.login-button:hover,
+.logout-button:hover {
+  background: #6b6b76;
+}
+
+.username {
+  color: #eee;
 }
