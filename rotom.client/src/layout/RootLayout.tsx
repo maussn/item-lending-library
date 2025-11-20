@@ -11,6 +11,7 @@ export const RootLayout = () => {
       <img src={logo}/>
       <nav className="navbar">
         <NavButton to="/" text="catalogue" isActive={pathname === "/"} />
+        <NavButton to="/about" text="about" isActive={pathname === "/"} />
       </nav>
       <LoginMenu/>
     </header>
