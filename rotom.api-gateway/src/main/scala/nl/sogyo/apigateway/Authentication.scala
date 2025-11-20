@@ -2,20 +2,16 @@ package nl.sogyo.apigateway
 
 import nl.sogyo.persistence.Account
 import nl.sogyo.persistence.AccountsDatabase
+import scala.annotation.unused
 
 object Authentication {
 
   private def isCorrectPassword(passwordDatabase: String, passwordRequest: String): Boolean =
     passwordDatabase.equals(passwordRequest)
-
-  private def unpackUuid(uuidOption: Option[String]): String =
-    uuidOption match
-      case Some(uuid) => uuid 
-      case None => throw MissingUuidException()
     
   private def checkPassword(account: Account, userLogin: UserLogin): String =
     if isCorrectPassword(account.password, userLogin.password)
-    then unpackUuid(account.uuid)
+    then account.uuid
     else throw IncorrectLoginException("Incorrect password.")
 
   def authenticate(userLogin: UserLogin, database: AccountsDatabase): String =
