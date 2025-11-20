@@ -2,7 +2,6 @@ package nl.sogyo.apigateway
 
 import nl.sogyo.persistence.Account
 import nl.sogyo.persistence.AccountsDatabase
-import scala.annotation.unused
 
 object Authentication {
 

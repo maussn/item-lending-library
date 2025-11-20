@@ -21,9 +21,8 @@ trait AccountsDatabase extends Database with Tables {
   import profile.api.*
   val table: TableQuery[AccountsTable]
 
-  private def setupQuery(username: String) = for {
-    account <- table if account.username.equals(username)
-  } yield account
+  private def setupQuery(username: String) = 
+    table.filter(_.username === username)
 
   def queryAccountsByUsername(username: String): Option[Account] = 
     exec(setupQuery(username).result).headOption
