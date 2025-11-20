@@ -21,3 +21,5 @@ export const LoginMenu = ({ isLoggedIn, username }: LoginMenuProps) => {
     </div>
   );
 };
+
+// From chatgpt
