@@ -25,7 +25,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  place-items: top;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -67,9 +67,26 @@ button:focus-visible {
   }
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+#logo-header {
+    position: sticky;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 200px;
+    color: red;
+}
+
+
+#logo-header img {
+    height: inherit;
+}
+
+
+#mainheader {
+    background-color: var(--primary-color);
+    font-size: 2rem;
+    color: white;
+    position: sticky;
+    top: 0;
+    height: 60px;
 }
