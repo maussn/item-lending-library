@@ -1,6 +1,21 @@
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "../contexts/AuthContext"
 
 
 export const Login = () => {
+  const { login } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogin = () => {
+    const username = (document.getElementById("username-input") as HTMLInputElement).value
+    login(username, "1")
+    navigate("/")
+  }
+
+  const cancelLogin = () => {
+    navigate("/")
+  }
+
   return <div className="center-screen">
     <div className="box">
       <div className="row">
@@ -14,8 +29,9 @@ export const Login = () => {
       </div>
 
       <div className="button-row">
-        <button>Login</button>
         <button>Register</button>
+        <button onClick={cancelLogin}>Cancel</button>
+        <button onClick={handleLogin}>Login</button>
       </div>
     </div>
   </div>

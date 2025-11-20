@@ -12,7 +12,7 @@ export const RootLayout = () => {
       <nav className="navbar">
         <NavButton to="/" text="catalogue" isActive={pathname === "/"} />
       </nav>
-      <LoginMenu isLoggedIn={false}/>
+      <LoginMenu/>
     </header>
 
     <main className="flex-1">
