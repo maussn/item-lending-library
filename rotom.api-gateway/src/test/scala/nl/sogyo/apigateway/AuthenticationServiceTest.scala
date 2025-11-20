@@ -9,12 +9,11 @@ import nl.sogyo.apigateway.GatewayServices.getServices
 import nl.sogyo.persistence.Account
 import nl.sogyo.persistence.AccountsDatabase
 import nl.sogyo.persistence.H2DatabaseProvider
-import org.http4s.Method
-import org.http4s.Request
-import org.http4s.Response
+import org.http4s.*
 import org.http4s.circe.*
 import org.http4s.implicits.*
 import slick.jdbc.H2Profile.api.*
+
 import scala.concurrent.duration.*
 
 
@@ -60,10 +59,34 @@ class AuthenticationServiceTest extends CatsEffectSuite {
   
   // Tests
   test("test authentication service success") {
-    
     val jsonBody = json"""{"username": ${correctUsername}, "password": ${correctPassword}}"""
     val loginRequest = Request[IO](Method.POST, uri"/login").withEntity(jsonBody)
     val response = service().run(loginRequest)
-    assertIO(response.flatMap(_.as[String]), correctUuid)
+    for {
+      _ <- assertIO(response.map(_.status.code), 200)
+      _ <- assertIO(response.flatMap(_.as[String]), correctUuid)
+    } yield ()
+  }
+
+  test("test authentication service wrong password") {
+    val wrongPassword = "wrongpassword"
+    val jsonBody = json"""{"username": ${correctUsername}, "password": ${wrongPassword}}"""
+    val loginRequest = Request[IO](Method.POST, uri"/login").withEntity(jsonBody)
+    val response = service().run(loginRequest)
+    for {
+      _ <- assertIO(response.map(_.status.code), 401)
+      _ <- assertIO(response.flatMap(_.as[String]), "Incorrect password.")
+    } yield ()
+  }
+
+  test("test authentication service wrong username") {
+    val wrongUsername = "klaas"
+    val jsonBody = json"""{"username": ${wrongUsername}, "password": ${correctPassword}}"""
+    val loginRequest = Request[IO](Method.POST, uri"/login").withEntity(jsonBody)
+    val response = service().run(loginRequest)
+    for {
+      _ <- assertIO(response.map(_.status.code), 401)
+      _ <- assertIO(response.flatMap(_.as[String]), "Incorrect username.")
+    } yield ()
   }
 }
