@@ -1,10 +1,16 @@
-import { useState } from 'react'
+import { useState } from "react";
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { fetchHelloWorld } from './services/api'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [test, setTest] = useState("not pressed")
+
+  const pressButton = async () => {
+    setTest(await fetchHelloWorld())
+  }
 
   return (
     <>
@@ -18,8 +24,8 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button onClick={() => pressButton()}>
+          {test}
         </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR

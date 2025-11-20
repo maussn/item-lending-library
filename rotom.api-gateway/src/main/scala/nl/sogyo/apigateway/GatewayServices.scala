@@ -4,6 +4,7 @@ import cats.data.Kleisli
 import cats.effect.*
 import io.circe.*
 import io.circe.generic.auto.*
+import io.circe.generic.semiauto
 import nl.sogyo.apigateway.Authentication.authenticate
 import nl.sogyo.persistence.DatabaseProvider
 import org.http4s.*
@@ -19,11 +20,16 @@ case class UserLogin(username: String, password: String)
 
 implicit val decoder: EntityDecoder[IO, UserLogin] = jsonOf[IO, UserLogin]
 
+case class Hello(message: String)
+implicit val helloEncoder: Encoder[Hello] = semiauto.deriveEncoder[Hello]
+implicit def helloEntityEncoder[F[_]]: EntityEncoder[F, Hello] = jsonEncoderOf[F, Hello]
+
+
 object GatewayServices:
 
   def getServices(databaseProvider: DatabaseProvider): Kleisli[IO, Request[IO], Response[IO]] =
     HttpRoutes.of[IO] {
-    case req @ POST -> Root / "login" =>
+    case req @ POST -> Root / "api" / "login" =>
       for {
         user <- req.as[UserLogin]
         auth = Try(authenticate(user, databaseProvider.accountsDatabase))
@@ -31,4 +37,6 @@ object GatewayServices:
           case Success(uuid) => Ok(uuid)
           case Failure(e) => Unauthorized(`WWW-Authenticate`(Challenge("Basic", "my-realm")), e.getMessage())
       } yield resp
+    case GET -> Root / "api" / "hello" =>
+      Ok(Hello("hello world"))
     }.orNotFound
